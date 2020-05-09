@@ -4,8 +4,13 @@ import log from "fancy-log";
 import cors from "cors";
 
 import config from "./config";
+import DbConnection from "./database";
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
+
+// Connect to database
+DbConnection.connect();
 
 // Middlwares
 app.use(cors());
@@ -13,5 +18,28 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+  const error = new Error("Resource does not exist");
+  error.status = 404;
+  next(error);
+});
 
-app.listen(config.port, () => log(`Server running on port ${config.port}`));
+if (!isProduction) {
+  // eslint-disable-next-line no-unused-vars
+  app.use((error, req, res, next) => {
+    log(error.stack);
+    res.status(error.status || 500).json({
+      error: {
+        message: error.message,
+      },
+    });
+  });
+}
+
+const port = process.env.NODE_ENV === "test" ? 8378 : parseInt(config.port, 10);
+export const server = app.listen(port, () => {
+  log(`Server is running on http://localhost:${port}`);
+});
+
+export default app;

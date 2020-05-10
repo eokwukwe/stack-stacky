@@ -5,6 +5,7 @@ dotenv.config();
 export default {
   port: process.env.PORT,
   jwtSecret: process.env.JWT_SECRET,
+  jwtExpire: process.env.JWT_EXPIRE,
   databaseURL: {
     dev: process.env.DEV_DATABASE_URL,
     test: process.env.TEST_DATABASE_URL,

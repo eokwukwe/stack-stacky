@@ -1,15 +1,15 @@
-import mongoose from "mongoose";
-import log from "fancy-log";
+import mongoose from 'mongoose';
+import log from 'fancy-log';
 
-import config from "../config";
+import config from '../config';
 
 class DbConnection {
   static connectionURL() {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === 'production') {
       return config.databaseURL.prod;
     }
 
-    if (process.env.NODE_ENV === "test") {
+    if (process.env.NODE_ENV === 'test') {
       return config.databaseURL.test;
     }
 
@@ -18,17 +18,23 @@ class DbConnection {
 
   static async connect() {
     try {
-     await mongoose.connect(DbConnection.connectionURL(), {
+      const conn = await mongoose.connect(DbConnection.connectionURL(), {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
         useFindAndModify: false,
       });
 
-      log("Database connection successful");
+      log('Database connection successful', conn.connection.db.databaseName);
+      return conn;
     } catch (error) {
-      console.error("Database connection error");
+      console.error('Database connection error', error);
     }
+  }
+
+  static async dropDb() {
+    const database = await DbConnection.connect();
+    database.connection.db.dropDatabase();
   }
 }
 

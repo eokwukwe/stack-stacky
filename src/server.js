@@ -5,6 +5,7 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 
 import config from './config';
+import apiRoutes from './routes';
 import DbConnection from './database';
 import swaggerDoc from './swagger.json';
 
@@ -23,8 +24,15 @@ app.use(express.json());
 // Swagger document page
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
+// register api routes
+app.use(apiRoutes);
+
+app.get('/', (req, res) => {
+  res.status(200).send(`<h1>Welcome to stack-stacky API</h1>`);
+});
+
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
+app.use('*', (req, res, next) => {
   const error = new Error('Resource does not exist');
   error.status = 404;
   next(error);

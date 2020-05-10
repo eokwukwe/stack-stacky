@@ -2,13 +2,16 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import BcryptHelper from '../helpers/BcryptHelper';
 
-
-
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
     },
     email: {
       type: String,
@@ -31,11 +34,10 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash password before saving
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function (next) {
   if (this.password && this.isModified('password')) {
-    this.password = BcryptHelper.hash(this.password);
+    this.password = await BcryptHelper.hash(this.password);
   }
-
   next();
 });
 

@@ -1,21 +1,19 @@
+import responseCodes from '../../helpers/constants/httpResponseCodes';
 
 /**
  * Validator Class
  */
 export default class Validator {
-  constructor(schema) {
-    this.schema = schema; // joi schema for the input
-  }
-
   /**
-   * @description The validation middleware
+   * @description Validate user input
    *
    * @param {*} req
    * @param {*} res
    * @param {*} next
    */
-  async validationInput(req, res, next) {
-    const result = await this.validateSchema(req.body, this.schema);
+  static validationInput(schema){
+    return async (req, res, next) => {
+    const result = await Validator.validateSchema(req.body, schema);
 
     if (result.hasError) {
       return res.status(400).json({ errors: result.errors });
@@ -23,7 +21,7 @@ export default class Validator {
 
     req.body = result.fields;
     return next();
-  }
+  }}
 
   /**
    * @description Check schema against user input
@@ -32,16 +30,16 @@ export default class Validator {
    * @param {object} schema Joi schema for the input
    * @returns {object} result of validation
    */
-  async validateSchema(data, schema) {
+  static async validateSchema (data, schema) {
     try {
       const value = await schema.validateAsync(data, {
         abortEarly: false,
       });
       return { hasError: false, fields: value };
     } catch ({ details }) {
-      return this.formatErrorDetails(details, true);
+      return Validator.formatErrorDetails(details, true);
     }
-  }
+  };
 
   /**
    * @description Customize the format of the errors from the validation
@@ -50,13 +48,13 @@ export default class Validator {
    * @param {boolean} flag indicates if the validation fails
    * @returns {object} Customized errors
    */
-  formatErrorDetails(details, flag) {
+  static formatErrorDetails(details, flag) {
     const errors = [];
 
     details.forEach((error) => {
       const data = {
-        type: 'InvalidInput',
-        code: 'input_err',
+        type: responseCodes.BAD_REQUEST.type,
+        code: responseCodes.BAD_REQUEST.code,
         message: `${error.message.replace(/"/g, '')}`,
         field: `${error.path[0]}`,
       };

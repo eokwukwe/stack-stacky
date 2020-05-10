@@ -11,12 +11,8 @@ export default class UserService extends BaseService {
    * @return {Promise} user
    */
   static async create(payload) {
-    try {
-      const user = await User.create(payload);
-      return UserService.stripPassword(user);
-    } catch (error) {
-      return error;
-    }
+    const user = await User.create(payload);
+    return UserService.stripPassword(user._doc);
   }
 
   /**
@@ -26,7 +22,7 @@ export default class UserService extends BaseService {
    * @return {Promise} user
    */
   static async findByEmail(email) {
-    return User.findOne({ email });
+    return User.findOne({ email }).select('-password');
   }
 
   /**
@@ -46,7 +42,7 @@ export default class UserService extends BaseService {
    * @returns {object} user object without password
    */
   static stripPassword(data) {
-    const { password, ...newUserObject } = data;
+    const { password, __v, ...newUserObject } = data;
     return newUserObject;
   }
 }

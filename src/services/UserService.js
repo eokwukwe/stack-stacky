@@ -22,7 +22,7 @@ export default class UserService extends BaseService {
    * @return {Promise} user
    */
   static async findByEmail(email) {
-    return User.findOne({ email }).select('-password');
+    return User.findOne({ email });
   }
 
   /**

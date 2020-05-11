@@ -2,12 +2,10 @@ import cors from 'cors';
 import morgan from 'morgan';
 import log from 'fancy-log';
 import express from 'express';
-import swaggerUi from 'swagger-ui-express';
 
 import config from './config';
 import apiRoutes from './routes';
 import DbConnection from './database';
-import swaggerDoc from './swagger.json';
 
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -20,9 +18,6 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-// Swagger document page
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // register api routes
 app.use(apiRoutes);

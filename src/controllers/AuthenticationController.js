@@ -3,8 +3,8 @@ import isEmpty from 'lodash.isempty';
 import UserService from '../services/UserService';
 import BcryptHelper from '../helpers/BcryptHelper';
 import ErrorResponse from '../helpers/errorResponse';
+import Authentication from '../middlewares/Authentication';
 import responseCodes from '../helpers/constants/httpResponseCodes';
-import Authentication from '../middlewares/authentications/Authentication';
 
 export default class AuthenticationController {
   /**
@@ -42,12 +42,6 @@ export default class AuthenticationController {
    */
   static async login(req, res, next) {
     const { email, password } = req.body;
-    const error = {
-      type: responseCodes.INVALID_CREDENTIALS.type,
-      code: responseCodes.INVALID_CREDENTIALS.code,
-      message: 'Email or password not correct',
-      field: 'email-password',
-    };
 
     try {
       const user = await UserService.findByEmail(email);
@@ -67,10 +61,19 @@ export default class AuthenticationController {
             },
           });
         }
-        return ErrorResponse.httpErrorResponse(res, { error }, 400);
+        
+        return ErrorResponse.httpErrorResponse(
+          res,
+          responseCodes.INVALID_CREDENTIALS,
+          400
+        );
       }
 
-      return ErrorResponse.httpErrorResponse(res, { error }, 400);
+      return ErrorResponse.httpErrorResponse(
+        res,
+        responseCodes.INVALID_CREDENTIALS,
+        400
+      );
     } catch (error) {
       return next(error);
     }

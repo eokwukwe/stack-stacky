@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import models from '../models';
 import Validator from '../middlewares/validations/Validator';
-import Authentication from '../middlewares/authentications/Authentication';
+import Authentication from '../middlewares/Authentication';
 import AuthenticationController from '../controllers/AuthenticationController';
 import { signupSchema, loginSchema } from '../middlewares/validations/schemas';
 

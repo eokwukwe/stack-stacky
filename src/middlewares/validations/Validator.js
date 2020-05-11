@@ -1,4 +1,5 @@
 import responseCodes from '../../helpers/constants/httpResponseCodes';
+import ErrorResponse from '../../helpers/errorResponse';
 
 /**
  * Validator Class
@@ -16,7 +17,8 @@ export default class Validator {
     const result = await Validator.validateSchema(req.body, schema);
 
     if (result.hasError) {
-      return res.status(400).json({ errors: result.errors });
+      const errors = result.errors;
+      return ErrorResponse.httpErrorResponse(res, errors, 400)
     }
 
     req.body = result.fields;
@@ -52,13 +54,9 @@ export default class Validator {
     const errors = [];
 
     details.forEach((error) => {
-      const data = {
-        type: responseCodes.BAD_REQUEST.type,
-        code: responseCodes.BAD_REQUEST.code,
-        message: `${error.message.replace(/"/g, '')}`,
-        field: `${error.path[0]}`,
-      };
-      errors.push(data);
+      responseCodes.BAD_REQUEST.message = `${error.message.replace(/"/g, '')}`;
+      responseCodes.BAD_REQUEST.field = `${error.path[0]}`;
+      errors.push(responseCodes.BAD_REQUEST);
     });
 
     return { hasError: flag, errors };

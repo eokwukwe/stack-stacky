@@ -11,14 +11,27 @@ const router = Router()
 
 /**
  * @description creates a new question
+ *
  * @param {string}
  * @param {function}
  */
 router.post(
-  '/question',
+  '/questions',
   Authentication.verifyUser,
   Validator.validationInput(questionSchema),
   QuestionController.createNewQuestion
+);
+
+/**
+ * @description get a question
+ *
+ * @param {string}
+ * @param {function}
+ */
+router.get(
+  '/questions/:id',
+  Validator.validateIdParams,
+  QuestionController.getQuestionById
 );
 
 export default router

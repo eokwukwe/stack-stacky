@@ -1,9 +1,11 @@
 import jwt from 'jsonwebtoken';
 import isEmpty from 'lodash.isempty';
 
-import JwtHelper from '../helpers/JwtHelper'
+import JwtHelper from '../helpers/JwtHelper';
 import ErrorResponse from '../helpers/errorResponse';
 import responseCodes from '../helpers/constants/httpResponseCodes';
+
+const { UNAUTHORIZED_ACCESS } = responseCodes;
 
 export default class Authentication {
   constructor(model) {
@@ -23,28 +25,18 @@ export default class Authentication {
     try {
       const token = req.headers.authorization;
 
-      if(!token){
-        return ErrorResponse.httpErrorResponse(
-          res,
-          responseCodes.UNAUTHORIZED_ACCESS,
-          401
-        )
+      if (!token) {
+        return ErrorResponse.httpErrorResponse(res, UNAUTHORIZED_ACCESS, 401);
       }
 
       const userToken = token.split(' ')[1];
       const decodeToken = JwtHelper.verifyToken(userToken);
       req.user = decodeToken;
 
-      return next()
+      return next();
     } catch (error) {
-      console.log(error);
-      
-      responseCodes.UNAUTHORIZED_ACCESS.message = 'Invalid token'
-      return ErrorResponse.httpErrorResponse(
-        res,
-        responseCodes.UNAUTHORIZED_ACCESS,
-        400
-      )
+      UNAUTHORIZED_ACCESS.message = 'Invalid token';
+      return ErrorResponse.httpErrorResponse(res, UNAUTHORIZED_ACCESS, 400);
     }
   }
 
@@ -62,11 +54,7 @@ export default class Authentication {
     const usernameExists = await this.model.findOne({ username }, 'username');
 
     if (!isEmpty(emailExists) || !isEmpty(usernameExists)) {
-      return ErrorResponse.httpErrorResponse(
-        res,
-        responseCodes.DUPLICATE_RECORD,
-        409
-      );
+      return ErrorResponse.httpErrorResponse(res, responseCodes.DUPLICATE_RECORD, 409);
     }
 
     return next();

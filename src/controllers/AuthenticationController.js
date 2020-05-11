@@ -6,6 +6,7 @@ import BcryptHelper from '../helpers/BcryptHelper';
 import ErrorResponse from '../helpers/errorResponse';
 import responseCodes from '../helpers/constants/httpResponseCodes';
 
+const { INVALID_CREDENTIALS } = responseCodes;
 export default class AuthenticationController {
   /**
    * @description Signup
@@ -62,18 +63,10 @@ export default class AuthenticationController {
           });
         }
 
-        return ErrorResponse.httpErrorResponse(
-          res,
-          responseCodes.INVALID_CREDENTIALS,
-          400
-        );
+        return ErrorResponse.httpErrorResponse(res, INVALID_CREDENTIALS, 400);
       }
 
-      return ErrorResponse.httpErrorResponse(
-        res,
-        responseCodes.INVALID_CREDENTIALS,
-        400
-      );
+      return ErrorResponse.httpErrorResponse(res, INVALID_CREDENTIALS, 400);
     } catch (error) {
       return next(error);
     }

@@ -10,7 +10,7 @@ afterAll(async () => {
   await server.close(); // close server
 });
 
-describe("Authentication Controller test", () => {
+describe("Authentication Requests test", () => {
   describe("User Sign Up", () => {
     describe("Validate signup credentials", () => {
       it("should return a BadRequest error for missing required fields", async () => {

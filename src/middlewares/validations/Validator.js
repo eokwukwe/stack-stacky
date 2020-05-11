@@ -1,5 +1,9 @@
-import responseCodes from '../../helpers/constants/httpResponseCodes';
+import mongoose from 'mongoose';
+
 import ErrorResponse from '../../helpers/errorResponse';
+import responseCodes from '../../helpers/constants/httpResponseCodes';
+
+const { BAD_REQUEST } = responseCodes;
 
 /**
  * Validator Class
@@ -53,12 +57,30 @@ export default class Validator {
    */
   static formatErrorDetails(details, flag) {
     const errors = details.map((detail) => ({
-      code: responseCodes.BAD_REQUEST.code,
-      type: responseCodes.BAD_REQUEST.type,
+      code: BAD_REQUEST.code,
+      type: BAD_REQUEST.type,
       message: `${detail.message.replace(/"/g, '')}`,
       field: `${detail.path[0]}`,
     }));
 
     return { hasError: flag, errors };
+  }
+
+  /**
+   * @description Validate id params
+   *
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   */
+  static validateIdParams(req, res, next) {
+    const { id } = req.params;
+
+    if (id && !mongoose.Types.ObjectId.isValid(id)) {
+      BAD_REQUEST.message = 'Resource ID is not a invalid object Id';
+      return ErrorResponse.httpErrorResponse(res, BAD_REQUEST, 400);
+    }
+
+    return next();
   }
 }

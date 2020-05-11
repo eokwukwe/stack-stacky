@@ -10,14 +10,20 @@ const questionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    votes: {
+      type: Number,
+      default: 0
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    subscribers: [String],  // Store only the email of subscribers
+    answers: Array,
   },
   { timestamps: true }
 );
 
-questionSchema.index({ '$**': 'text', type: -1 });
+questionSchema.index({ 'title': 'text', 'body': 'text', type: -1 });
 
 export default mongoose.model('Question', questionSchema);

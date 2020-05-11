@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import isEmpty from 'lodash.isempty';
 
-import config from '../config';
+import JwtHelper from '../helpers/JwtHelper'
 import ErrorResponse from '../helpers/errorResponse';
 import responseCodes from '../helpers/constants/httpResponseCodes';
 
@@ -12,17 +12,6 @@ export default class Authentication {
   }
 
   /**
-   * @description Generate a token
-   *
-   * @param {string | object| Buffer} customer_id The id of the customer
-   * @returns {string} token
-   * @mwmber Authentication
-   */
-  static generateToken(payload) {
-    return jwt.sign(payload, config.jwtSecret, { expiresIn: config.jwtExpire });
-  }
-
-  /**
    * @description Verify a token
    *
    * @param  {object} req
@@ -30,7 +19,7 @@ export default class Authentication {
    * @param  {Function} next
    * @returns {object} Server Response
    */
-  static async verifyToken(req, res, next) {
+  static async verifyUser(req, res, next) {
     try {
       const token = req.headers.authorization;
 
@@ -43,11 +32,13 @@ export default class Authentication {
       }
 
       const userToken = token.split(' ')[1];
-      const decodeToken = jwt.verify(userToken, config.jwtSecret);
+      const decodeToken = JwtHelper.verifyToken(userToken);
       req.user = decodeToken;
 
       return next()
     } catch (error) {
+      console.log(error);
+      
       responseCodes.UNAUTHORIZED_ACCESS.message = 'Invalid token'
       return ErrorResponse.httpErrorResponse(
         res,

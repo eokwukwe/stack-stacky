@@ -1,9 +1,9 @@
 import isEmpty from 'lodash.isempty';
 
+import JwtHelper from '../helpers/JwtHelper';
 import UserService from '../services/UserService';
 import BcryptHelper from '../helpers/BcryptHelper';
 import ErrorResponse from '../helpers/errorResponse';
-import Authentication from '../middlewares/Authentication';
 import responseCodes from '../helpers/constants/httpResponseCodes';
 
 export default class AuthenticationController {
@@ -26,7 +26,7 @@ export default class AuthenticationController {
 
       return res.status(201).json({
         message: 'Singup successful',
-        token: Authentication.generateToken({ id: user._id }),
+        token: JwtHelper.generateToken({ id: user._id }),
       });
     } catch (error) {
       return next(error);
@@ -57,11 +57,11 @@ export default class AuthenticationController {
             message: 'Log in successfull',
             data: {
               ...userSafeData,
-              token: Authentication.generateToken({ id: user._id }),
+              token: JwtHelper.generateToken({ id: user._id }),
             },
           });
         }
-        
+
         return ErrorResponse.httpErrorResponse(
           res,
           responseCodes.INVALID_CREDENTIALS,

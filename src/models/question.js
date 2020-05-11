@@ -18,6 +18,6 @@ const questionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-questionSchema.index({ title: 'text', type: -1 });
+questionSchema.index({ '$**': 'text', type: -1 });
 
 export default mongoose.model('Question', questionSchema);

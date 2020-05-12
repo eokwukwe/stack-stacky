@@ -39,6 +39,14 @@ const questionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-questionSchema.index({ title: 'text', body: 'text', type: -1 });
+questionSchema.index(
+  {
+    title: 'text',
+    body: 'text',
+  },
+  {
+    name: 'question_index',
+  }
+);
 
 export default mongoose.model('Question', questionSchema);

@@ -65,10 +65,14 @@ export default class AuthenticationController {
    */
   static async getAllQuestions(req, res, next) {
     try {
-      const questions = await QuestionService.findAll();
+      const page = req.query.page || 1;
+      const limit = 10;
+      const offset = (page - 1) * limit;
+
+      const questions = await QuestionService.findAll(offset, limit);
 
       if (isEmpty(questions)) {
-        NOT_FOUND.message = 'No questions founds';
+        NOT_FOUND.message = 'No questions found';
         return ErrorResponse.httpErrorResponse(res, NOT_FOUND, 404);
       }
 
@@ -143,6 +147,34 @@ export default class AuthenticationController {
       return res.status(200).json({
         message: 'Question downvoted',
         data: downvote,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * @description search questions
+   *
+   * @param {object} req
+   * @param {object} res
+   * @param {function} next
+   * @returns {object} response body object
+   */
+  static async searchQuestion(req, res, next) {
+    try {
+      const { text } = req.query;
+
+      const search = await QuestionService.searchQuestion(text);
+
+      if (isEmpty(search)) {
+        NOT_FOUND.message = 'Your search did not match any documents';
+        return ErrorResponse.httpErrorResponse(res, NOT_FOUND, 404);
+      }
+
+      return res.status(200).json({
+        message: 'Search results',
+        data: search,
       });
     } catch (error) {
       return next(error);

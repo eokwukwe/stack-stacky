@@ -35,8 +35,13 @@ export default class QuestionService extends BaseService {
    *
    * @return {Promise} question
    */
-  static async findAll() {
-    const data = await Question.find();
+  static async findAll(offset = null, limit = null) {
+    const data = await Question.find()
+      .skip(offset)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+
     const questions = data.map((q) => QuestionService.formatQueryResult(q));
     return questions;
   }
@@ -49,7 +54,7 @@ export default class QuestionService extends BaseService {
    * @return {Promise} question
    */
   static async updateQuestionWithAnswer(id, answer) {
-    const updated =await Question.findOneAndUpdate(
+    const updated = await Question.findOneAndUpdate(
       { _id: id },
       { $push: { answers: answer } },
       { new: true }
@@ -66,7 +71,7 @@ export default class QuestionService extends BaseService {
    * @return {Promise} question
    */
   static async updateQuestionWithUpvote(id) {
-    const upvote =await Question.findOneAndUpdate(
+    const upvote = await Question.findOneAndUpdate(
       { _id: id },
       { $inc: { votes: 1 } },
       { new: true }
@@ -83,13 +88,30 @@ export default class QuestionService extends BaseService {
    * @return {Promise} question
    */
   static async updateQuestionWithDownvote(id) {
-    const downvote =await Question.findOneAndUpdate(
+    const downvote = await Question.findOneAndUpdate(
       { _id: id },
       { $inc: { votes: -1 } },
       { new: true }
     );
 
     return QuestionService.formatQueryResult(downvote);
+  }
+
+  /**
+   * @description search questions
+   * @param {string} search text
+   * @param {integer} limit
+   * @param {integer} offset
+   * @return {array} questions
+   */
+  static async searchQuestion(searchText, offset = null, limit = null) {
+    const search = await Question.find({ $text: { $search: searchText } })
+      .skip(offset)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+
+    return search.map((s) => QuestionService.formatQueryResult(s));
   }
 
   static formatQueryResult(data) {
@@ -99,11 +121,11 @@ export default class QuestionService extends BaseService {
       body: data.body,
       owner: data.owner,
       votes: data.votes,
-      answers: data.answers.map(ans => ({
+      answers: data.answers.map((ans) => ({
         _id: ans._id,
         body: ans.body,
         user: ans.user,
-        date: ans.date
+        date: ans.date,
       })),
       subscribers: data.subscribers,
       createdAt: data.createdAt,

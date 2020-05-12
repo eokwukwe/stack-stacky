@@ -26,6 +26,17 @@ router.post(
   QuestionController.createNewQuestion
 );
 
+// /**
+//  * @description search questions
+//  *
+//  * @param {string}
+//  * @param {function}
+//  */
+// router.get(
+//   '/questions/search',
+//   QuestionController.searchQuestion
+// );
+
 /**
  * @description get all questions
  *
@@ -35,6 +46,17 @@ router.post(
 router.get(
   '/questions',
   QuestionController.getAllQuestions
+);
+
+/**
+ * @description search questions
+ *
+ * @param {string}
+ * @param {function}
+ */
+router.get(
+  '/questions/search',
+  QuestionController.searchQuestion
 );
 
 /**
@@ -91,5 +113,6 @@ router.put(
   checkIfRecordExists(Question),
   QuestionController.downvote
 );
+
 
 export default router

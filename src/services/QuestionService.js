@@ -36,11 +36,7 @@ export default class QuestionService extends BaseService {
    * @return {Promise} question
    */
   static async findAll(offset = null, limit = null) {
-    const data = await Question.find()
-      .skip(offset)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .exec();
+    const data = await Question.find().skip(offset).limit(limit).sort({ createdAt: -1 }).exec();
 
     const questions = data.map((q) => QuestionService.formatQueryResult(q));
     return questions;
@@ -67,7 +63,6 @@ export default class QuestionService extends BaseService {
    * @description Update a questions with upvote
    *
    * @param {ObjectId} id
-   * @param {Object} answer
    * @return {Promise} question
    */
   static async updateQuestionWithUpvote(id) {
@@ -84,7 +79,6 @@ export default class QuestionService extends BaseService {
    * @description Update a questions with downvote
    *
    * @param {ObjectId} id
-   * @param {Object} answer
    * @return {Promise} question
    */
   static async updateQuestionWithDownvote(id) {
@@ -95,6 +89,16 @@ export default class QuestionService extends BaseService {
     );
 
     return QuestionService.formatQueryResult(downvote);
+  }
+
+  static async subscribeToQuestion(id, subscriberEmail) {
+    const subscribed = await Question.findOneAndUpdate(
+      { _id: id },
+      { $addToSet: { subscribers: subscriberEmail } },
+      { new: true }
+    );
+
+    return QuestionService.formatQueryResult(subscribed);
   }
 
   /**

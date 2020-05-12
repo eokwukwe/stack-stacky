@@ -1,10 +1,14 @@
 import isEmpty from 'lodash.isempty';
 
+import sendEmail from '../helpers/sendEmail';
+import UserService from '../services/UserService';
 import ErrorResponse from '../helpers/errorResponse';
+import emailTemplates from '../helpers/emailTemplates';
 import QuestionService from '../services/QuestionService';
 import responseCodes from '../helpers/constants/httpResponseCodes';
 
 const { NOT_FOUND } = responseCodes;
+const { answerNotify } = emailTemplates;
 export default class AuthenticationController {
   /**
    * @description Create a question
@@ -100,6 +104,19 @@ export default class AuthenticationController {
       };
 
       const update = await QuestionService.updateQuestionWithAnswer(id, answer);
+
+      // Send notification to subscribers
+      if (!isEmpty(update.subscribers)) {
+        const mailOptions = {
+          from: answerNotify.from,
+          to: update.subscribers,
+          subject: answerNotify.subject,
+          html: answerNotify.html(update.title),
+        };
+
+        await sendEmail(mailOptions);
+      }
+
       return res.status(200).json({
         message: 'Answer submitted successfully',
         data: update,
@@ -175,6 +192,29 @@ export default class AuthenticationController {
       return res.status(200).json({
         message: 'Search results',
         data: search,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * @description subscribe to a question
+   *
+   * @param {object} req
+   * @param {object} res
+   * @param {function} next
+   * @returns {object} response body object
+   */
+  static async subscribeToQuestion(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { email } = await UserService.findById(req.user.id);
+
+      await QuestionService.subscribeToQuestion(id, email);
+
+      return res.status(200).json({
+        message: 'Subscription successfull.',
       });
     } catch (error) {
       return next(error);

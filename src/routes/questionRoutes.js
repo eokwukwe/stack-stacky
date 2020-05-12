@@ -103,5 +103,19 @@ router.put(
   QuestionController.downvote
 );
 
+/**
+ * @description subscribe to a question
+ *
+ * @param {string}
+ * @param {function}
+ */
+router.put(
+  '/questions/:id/subscriptions',
+  Authentication.verifyUser,
+  Validator.validateIdParams,
+  checkIfRecordExists(Question),
+  QuestionController.subscribeToQuestion
+);
+
 
 export default router

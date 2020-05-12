@@ -59,7 +59,7 @@ export default class QuestionService extends BaseService {
   }
 
   /**
-   * @description Update a questions with upvotes
+   * @description Update a questions with upvote
    *
    * @param {ObjectId} id
    * @param {Object} answer
@@ -73,6 +73,23 @@ export default class QuestionService extends BaseService {
     );
 
     return QuestionService.formatQueryResult(upvote);
+  }
+
+  /**
+   * @description Update a questions with downvote
+   *
+   * @param {ObjectId} id
+   * @param {Object} answer
+   * @return {Promise} question
+   */
+  static async updateQuestionWithDownvote(id) {
+    const downvote =await Question.findOneAndUpdate(
+      { _id: id },
+      { $inc: { votes: -1 } },
+      { new: true }
+    );
+
+    return QuestionService.formatQueryResult(downvote);
   }
 
   static formatQueryResult(data) {

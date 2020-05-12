@@ -78,4 +78,18 @@ router.put(
   QuestionController.upvote
 );
 
+/**
+ * @description downvote a question
+ *
+ * @param {string}
+ * @param {function}
+ */
+router.put(
+  '/questions/:id/downvotes',
+  Authentication.verifyUser,
+  Validator.validateIdParams,
+  checkIfRecordExists(Question),
+  QuestionController.downvote
+);
+
 export default router

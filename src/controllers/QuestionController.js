@@ -88,18 +88,18 @@ export default class AuthenticationController {
    */
   static async answer(req, res, next) {
     try {
-      const {id } = req.params
+      const { id } = req.params;
       const answer = {
         user: req.user.id,
         body: req.body.body,
-        date: new Date()
-      }
+        date: new Date(),
+      };
 
-      const update = await QuestionService.updateQuestionWithAnswer(id, answer)
+      const update = await QuestionService.updateQuestionWithAnswer(id, answer);
       return res.status(200).json({
         message: 'Answer submitted successfully',
-        data: update
-      })
+        data: update,
+      });
     } catch (error) {
       return next(error);
     }
@@ -115,13 +115,35 @@ export default class AuthenticationController {
    */
   static async upvote(req, res, next) {
     try {
-      const {id } = req.params
-      const upvote = await QuestionService.updateQuestionWithUpvote(id)
+      const { id } = req.params;
+      const upvote = await QuestionService.updateQuestionWithUpvote(id);
 
       return res.status(200).json({
         message: 'Question upvoted',
-        data: upvote
-      })
+        data: upvote,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * @description downvote a question
+   *
+   * @param {object} req
+   * @param {object} res
+   * @param {function} next
+   * @returns {object} response body object
+   */
+  static async downvote(req, res, next) {
+    try {
+      const { id } = req.params;
+      const downvote = await QuestionService.updateQuestionWithDownvote(id);
+
+      return res.status(200).json({
+        message: 'Question downvoted',
+        data: downvote,
+      });
     } catch (error) {
       return next(error);
     }

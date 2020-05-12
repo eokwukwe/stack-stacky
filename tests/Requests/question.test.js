@@ -1,10 +1,12 @@
 import request from 'supertest';
 
-import app, { server } from '../../src/server';
+import models from '../../src/models';
 import DbConnection from '../../src/database';
+import app, { server } from '../../src/server';
 import JwtHelper from '../../src/helpers/JwtHelper';
 
 const url = '/api/v1';
+const { Question } = models;
 
 afterAll(async () => {
   DbConnection.dropDb(); // drop db
@@ -78,7 +80,7 @@ describe('Question Requests test', () => {
       });
     });
 
-    describe('Fetch a question by ID', () => {
+    describe('Fetch questions', () => {
       it('should return BadRequst error for invalid ID', async () => {
         const response = await request(app).get(`${url}/questions/5eb96a5c70a496331497b66g`);
         expect(response.statusCode).toBe(400);
@@ -93,6 +95,12 @@ describe('Question Requests test', () => {
 
       it('should return a question that does exist', async () => {
         const response = await request(app).get(`${url}/questions/${question._id}`);
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toHaveProperty('data');
+      });
+
+      it('should return an array of questions', async () => {
+        const response = await request(app).get(`${url}/questions`);
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty('data');
       });

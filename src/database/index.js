@@ -25,7 +25,7 @@ class DbConnection {
         useFindAndModify: false,
       });
 
-      log('Database connection successful', conn.connection.db.databaseName);
+      log('Database connection successful', await conn.connection.db.databaseName);
       return conn;
     } catch (error) {
       console.error('Database connection error', error);

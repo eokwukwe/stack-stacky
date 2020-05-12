@@ -3,11 +3,12 @@ import { Router } from 'express';
 import models from '../models';
 import Validator from '../middlewares/validations/Validator';
 import Authentication from '../middlewares/Authentication';
+import validationSchemas from '../middlewares/validations/schemas';
 import AuthenticationController from '../controllers/AuthenticationController';
-import { signupSchema, loginSchema } from '../middlewares/validations/schemas';
 
 const { User } = models;
 const router = Router();
+const { signupSchema, loginSchema } = validationSchemas;
 
 const userExists = new Authentication(User);
 

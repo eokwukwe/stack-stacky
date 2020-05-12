@@ -36,6 +36,21 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * @description search users by name or username
+   *
+   * @param {string} search term
+   * @return {array} users
+   */
+  static async searchUser(searchTerm) {
+    const re = new RegExp(`^${searchTerm}`, 'i');
+    return await User.find()
+      .or([{ name: { $regex: re } }, { username: { $regex: re } }])
+      .sort({ createdAt: 1 })
+      .select('_id name username')
+      .exec();
+  }
+
+  /**
    * @description strips the password, createdAt and updatedAt fields
    *
    * @param {object} userData

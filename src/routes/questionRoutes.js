@@ -26,17 +26,6 @@ router.post(
   QuestionController.createNewQuestion
 );
 
-// /**
-//  * @description search questions
-//  *
-//  * @param {string}
-//  * @param {function}
-//  */
-// router.get(
-//   '/questions/search',
-//   QuestionController.searchQuestion
-// );
-
 /**
  * @description get all questions
  *

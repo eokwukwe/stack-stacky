@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
+
 import BcryptHelper from '../helpers/BcryptHelper';
 
 const userSchema = new mongoose.Schema(
@@ -7,6 +8,7 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      index: true,
     },
     username: {
       type: String,
@@ -20,7 +22,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
-      index: true,
       validate: (value) => validator.isEmail(value),
     },
     password: {

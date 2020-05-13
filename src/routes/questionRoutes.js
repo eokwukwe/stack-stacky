@@ -49,7 +49,7 @@ router.get(
 );
 
 /**
- * @description get a question
+ * @description get a question by ID
  *
  * @param {string}
  * @param {function}

@@ -77,7 +77,7 @@ export default class Validator {
     const { id } = req.params;
 
     if (id && !mongoose.Types.ObjectId.isValid(id)) {
-      BAD_REQUEST.message = 'Resource ID is not a invalid object Id';
+      BAD_REQUEST.message = 'Resource ID is not a valid object Id';
       return ErrorResponse.httpErrorResponse(res, BAD_REQUEST, 400);
     }
 

@@ -5,7 +5,7 @@ import JwtHelper from '../helpers/JwtHelper';
 import ErrorResponse from '../helpers/errorResponse';
 import responseCodes from '../helpers/constants/httpResponseCodes';
 
-const { UNAUTHORIZED_ACCESS } = responseCodes;
+const { UNAUTHORIZED_ACCESS, DUPLICATE_RECORD } = responseCodes;
 
 export default class Authentication {
   constructor(model) {
@@ -54,7 +54,7 @@ export default class Authentication {
     const usernameExists = await this.model.findOne({ username }, 'username');
 
     if (!isEmpty(emailExists) || !isEmpty(usernameExists)) {
-      return ErrorResponse.httpErrorResponse(res, responseCodes.DUPLICATE_RECORD, 409);
+      return ErrorResponse.httpErrorResponse(res, DUPLICATE_RECORD, 409);
     }
 
     return next();

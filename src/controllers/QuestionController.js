@@ -115,6 +115,7 @@ export default class AuthenticationController {
         };
 
         // Simulate a simple background job
+        // Defer execcution of send email to next tick.
         process.nextTick(async () => {
           await sendEmail(mailOptions);
         });

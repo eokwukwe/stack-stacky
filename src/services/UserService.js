@@ -1,9 +1,8 @@
 import models from '../models';
-import BaseService from './BaseService';
 
 const { User } = models;
 
-export default class UserService extends BaseService {
+export default class UserService {
   /**
    * @description Create a new user document
    *

@@ -1,10 +1,9 @@
 import models from '../models';
-import BaseService from './BaseService';
 import isEmpty from 'lodash.isempty';
 
 const { Question } = models;
 
-export default class QuestionService extends BaseService {
+export default class QuestionService {
   /**
    * @description Create a new question document
    *

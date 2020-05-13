@@ -13,10 +13,10 @@ export default class ErrorResponse extends Error {
    * @param {number} statusCode
    * @return {object} server reponse
    */
-  static httpErrorResponse(res, errorData, statusCode) {
+  static httpErrorResponse(res, errorData, statusCode = 500) {
     if (Array.isArray(errorData)) {
-      return res.status(statusCode || 500).json({ errors: errorData });
+      return res.status(statusCode).json({ errors: errorData });
     }
-    return res.status(statusCode || 500).json({ error: errorData });
+    return res.status(statusCode).json({ error: errorData });
   }
 }

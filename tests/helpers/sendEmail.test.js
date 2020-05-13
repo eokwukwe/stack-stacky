@@ -11,9 +11,10 @@ describe('Send Email Test', () => {
         html: '<h3>This is to test that the email is working</h3>',
       };
       const mail = await sendEmail(mailOptions);
+console.log(mail);
 
       expect(mail).toBeDefined();
-      expect(mail.reject).toHaveLength(0);
+      expect(mail.rejected).toHaveLength(0);
     });
 
     it('should return an error for unsuccessful sending of email', async () => {

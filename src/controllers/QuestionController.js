@@ -114,7 +114,10 @@ export default class AuthenticationController {
           html: answerNotify.html(update.title),
         };
 
-        await sendEmail(mailOptions);
+        // Simulate a simple background job
+        process.nextTick(async () => {
+          await sendEmail(mailOptions);
+        });
       }
 
       return res.status(200).json({

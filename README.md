@@ -55,9 +55,7 @@ Follow these steps to set up the project in development mode
 
 - Create a database with `MongoDB Shell` and name it `stacky`
 - Set the following environment variables in `.env`:
-
-  - `DEV_DATABASE_URL` - this is the database URL
-
+- `DEV_DATABASE_URL` - this is the database URL
 - once you start the app, a database connection is setup and database created
 
 ### More about environmental variables
